@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>index.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "";
+    var thisFile = "index.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>index.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">const</span> express  = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">const</span> bodyParser  = <span class="hljs-built_in">require</span>(<span class="hljs-string">'body-parser'</span>);
+<span class="hljs-keyword">const</span> cors = <span class="hljs-built_in">require</span>(<span class="hljs-string">'cors'</span>);
+<span class="hljs-keyword">const</span> mongodb = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongodb'</span>);
+<span class="hljs-keyword">const</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>); 
+<span class="hljs-keyword">const</span> User  = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./models/User'</span>); 
+<span class="hljs-keyword">const</span> SPost  = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./models/SPost'</span>); 
+
+<span class="hljs-keyword">const</span> bcrpyt= <span class="hljs-built_in">require</span>(<span class="hljs-string">'bcrypt'</span>);
+<span class="hljs-keyword">const</span> app = express();
+<span class="hljs-keyword">const</span> jwt = <span class="hljs-built_in">require</span>( <span class="hljs-string">'jsonwebtoken'</span>);
+<span class="hljs-keyword">var</span> tuid = <span class="hljs-built_in">String</span>;
+
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2"></a>
+</div>
+<p>middle</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">
+app.use(bodyParser.json());
+app.use(cors());
+app.use(bodyParser.urlencoded ({<span class="hljs-attr">extended</span>:<span class="hljs-literal">false</span>}));   <span class="hljs-comment">//added for login</span>
+
+<span class="hljs-keyword">const</span> posts = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./routes/api/posts'</span>);
+app.use(<span class="hljs-string">'/api/posts'</span>, posts);
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3"></a>
+</div>
+<p>Forlogin registration start here
+mongo connect</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">mongoose.connect(<span class="hljs-string">'mongodb+srv://vue11:vue11@cluster0-s21uc.mongodb.net/test?retryWrites=true&amp;w=majority'</span>)
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4"></a>
+</div>
+<p>routes</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">app.post(<span class="hljs-string">'/signup'</span>, (req,res,next) =&gt; {
+    <span class="hljs-keyword">const</span> newUser = <span class="hljs-keyword">new</span> User ({
+        <span class="hljs-attr">email</span> : req.body.email,
+        <span class="hljs-attr">name</span> : req.body.name,
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5"></a>
+</div>
+<p>password : req.body.password</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">        password: bcrpyt.hashSync(req.body.password, <span class="hljs-number">10</span>)
+    })
+    newUser.save(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> {
+        <span class="hljs-keyword">if</span>(err){
+            <span class="hljs-keyword">return</span> res.status(<span class="hljs-number">400</span>).json({
+                <span class="hljs-attr">title</span>: <span class="hljs-string">'error'</span>,
+                <span class="hljs-attr">error</span>: <span class="hljs-string">'email in use'</span>
+            })
+        }
+        <span class="hljs-keyword">return</span> res.status(<span class="hljs-number">200</span>).json({
+            <span class="hljs-attr">title</span>:<span class="hljs-string">'signup sucess'</span>
+        }) 
+    })
+})
+
+app.post(<span class="hljs-string">'/login'</span>, (req,res,next) =&gt;{
+    User.findOne({ <span class="hljs-attr">email</span>: req.body.email}, (err,user) =&gt;{
+        <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> res.status(<span class="hljs-number">500</span>).json ({
+            <span class="hljs-attr">title</span> : <span class="hljs-string">'server erro'</span>,
+            <span class="hljs-attr">error</span>: err
+        })
+        <span class="hljs-keyword">if</span>(!user){
+            <span class="hljs-keyword">return</span> res.status(<span class="hljs-number">401</span>).json({
+                <span class="hljs-attr">title</span>: <span class="hljs-string">'user not found'</span>,
+                <span class="hljs-attr">error</span>: <span class="hljs-string">'invalid creddential'</span>
+            })
+        }
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6"></a>
+</div>
+<p>console.log(req.body.password);
+console.log(user.password);
+incorrect password</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7"></a>
+</div>
+<p>var result = bcrypt.compareSync(req.body.password, user.password);</p>
+<div class="dox">
+<div class="summary">
+<p>if (req.body.password === user.password) {
+console.log(&quot;Password correct&quot;);
+} else {
+console.log(&quot;Password wrong&quot;);
+}</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">       <span class="hljs-keyword">if</span>(bcrpyt.compareSync(req.body.password, user.password)){
+        
+            <span class="hljs-keyword">let</span> token = jwt.sign({<span class="hljs-attr">userID</span>: user._id},<span class="hljs-string">'secretkey'</span>);
+            <span class="hljs-keyword">return</span> res.status(<span class="hljs-number">200</span>).json({
+                <span class="hljs-attr">title</span>: <span class="hljs-string">'login sucess'</span>,
+                <span class="hljs-attr">token</span>: token})
+    
+}<span class="hljs-keyword">else</span> {
+<span class="hljs-keyword">return</span> res.status(<span class="hljs-number">401</span>).json({
+    <span class="hljs-attr">title</span>: <span class="hljs-string">'login failed'</span>,
+    <span class="hljs-attr">error</span>: <span class="hljs-string">'invalid credential'</span>
+})
+}
+  })  
+})
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8"></a>
+</div>
+<p>router for getting user info for token</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">app.get(<span class="hljs-string">'/user'</span>, (req,res,next) =&gt; {
+    <span class="hljs-keyword">let</span> token = req.headers.token;
+    jwt.verify(token,<span class="hljs-string">'secretkey'</span>, (err,decoded) =&gt; {
+      <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> res.status(<span class="hljs-number">401</span>).json({
+        <span class="hljs-attr">title</span>: <span class="hljs-string">'UnAuthorised User'</span>
+      })
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9"></a>
+</div>
+<p>when token is valid</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">     
+      User.findOne({<span class="hljs-attr">_id</span>: decoded.userID}, (err, user) =&gt; {
+        <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> <span class="hljs-built_in">console</span>.log(err)
+       <span class="hljs-keyword">return</span> res.status(<span class="hljs-number">200</span>).json({
+           <span class="hljs-attr">title</span>: <span class="hljs-string">'Userinformation fetched'</span>,
+           <span class="hljs-attr">user</span>: {
+            <span class="hljs-attr">email</span>: user.email,
+            <span class="hljs-attr">name</span>: user.name,
+            <span class="hljs-attr">_id</span>:user._id
+        }
+       })
+    })
+    } )
+})
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10"></a>
+</div>
+<p>new get find one</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">app.get(<span class="hljs-string">'/example/b'</span>,  (req, res, next) =&gt; {
+  
+    <span class="hljs-keyword">let</span> token = req.headers.token;
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11"></a>
+</div>
+<p>var decd=jwt_decode(token);</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    jwt.verify(token,<span class="hljs-string">'secretkey'</span>, (err,decoded) =&gt; {
+      <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> res.status(<span class="hljs-number">401</span>).json({
+        <span class="hljs-attr">title</span>: <span class="hljs-string">'UnAuthorised User'</span>
+      })
+      <span class="hljs-built_in">console</span>.log(decoded.userID);
+    
+      
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-12" id="section-12"></a>
+</div>
+<p>update(decoded.userID);
+temp find code</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">
+
+<span class="hljs-keyword">const</span> result1 = finddata(decoded.userID);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">"result1"</span>,result1);
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-13" id="section-13"></a>
+</div>
+<p>res.send( res.status(200).json({ result}))</p>
+<div class="dox">
+<div class="summary">
+<p>User.findOne({uid: decoded.userID}, (err, SPost) =&gt; {
+if (err) return console.log(err)
+// console.log(res.status(200).json({SPost}));
+//res.send( res.status(200).json({
+//  SPost
+//}))
+}
+)</p>
+</div>
+<div class="body">
+</div>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">})
+})
+
+
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-14" id="section-14"></a>
+</div>
+<p>for updating</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">app.post(<span class="hljs-string">'/example/updt'</span>,  (req, res, next) =&gt; {
+  
+    <span class="hljs-keyword">let</span> id = req.body.id;
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-15" id="section-15"></a>
+</div>
+<p>var decd=jwt_decode(token);
+jwt.verify(token,'secretkey', (err,decoded) =&gt; {
+if (err) return res.status(401).json({
+title: 'UnAuthorised User'
+})</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">      <span class="hljs-built_in">console</span>.log(id);
+    
+      
+   update(id,req.body.name,req.body.text);
+   res.send( res.status(<span class="hljs-number">200</span>).json({
+        <span class="hljs-attr">title</span>: <span class="hljs-string">'Update Done'</span>
+
+   }))
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-16" id="section-16"></a>
+</div>
+<p>SPost
+temp find code</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    })
+
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">finddata</span>(<span class="hljs-params">ruid, callback</span>)</span>{
+   <span class="hljs-keyword">var</span> result2 ; 
+    <span class="hljs-keyword">var</span> MongoClient = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongodb'</span>).MongoClient;
+    <span class="hljs-keyword">var</span> url = <span class="hljs-string">"mongodb+srv://vue11:vue11@cluster0-s21uc.mongodb.net/test?retryWrites=true&amp;w=majority"</span>;
+       MongoClient.connect(url, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, db</span>) </span>{
+        <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span> err;
+        <span class="hljs-keyword">var</span> dbo = db.db(<span class="hljs-string">"vue_express"</span>);
+        <span class="hljs-keyword">var</span> myquery = { <span class="hljs-attr">uid</span>:ruid};
+       <span class="hljs-keyword">var</span> result= dbo.collection(<span class="hljs-string">"posts"</span>).find(myquery).toArray(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err,result</span>) </span>{
+          <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span> err;
+         <span class="hljs-keyword">let</span> result2 = result;
+          <span class="hljs-built_in">console</span>.log(result);
+          
+          db.close();
+          <span class="hljs-keyword">return</span> callback (result);
+        });
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"result2"</span>,result2);
+      }); 
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-17" id="section-17"></a>
+</div>
+<pre><code> return callback(result2);
+</code></pre>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">}
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-18" id="section-18"></a>
+</div>
+<p>for update temp</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">update</span>(<span class="hljs-params">ruid, rname,rtxt</span>)</span>{
+<span class="hljs-keyword">var</span> MongoClient = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongodb'</span>).MongoClient;
+<span class="hljs-keyword">var</span> url = <span class="hljs-string">"mongodb+srv://vue11:vue11@cluster0-s21uc.mongodb.net/test?retryWrites=true&amp;w=majority"</span>;
+
+MongoClient.connect(url, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, db</span>) </span>{
+  <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span> err;
+  <span class="hljs-keyword">var</span> dbo = db.db(<span class="hljs-string">"vue_express"</span>);
+  <span class="hljs-keyword">var</span> myquery = { <span class="hljs-attr">uid</span>: ruid };
+  <span class="hljs-keyword">var</span> newvalues = { <span class="hljs-attr">$set</span>: {<span class="hljs-attr">name</span>: rname, <span class="hljs-attr">text</span>: rtxt } };
+  dbo.collection(<span class="hljs-string">"posts"</span>).updateOne(myquery, newvalues, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, res</span>) </span>{
+    <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span> err;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"1 document updated"</span>);
+    db.close();
+  });
+});
+}
+
+
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-19" id="section-19"></a>
+</div>
+<p>get very temp</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadPostCollection</span>(<span class="hljs-params"></span>)</span>{
+    <span class="hljs-keyword">const</span> client = <span class="hljs-keyword">await</span> mongodb.MongoClient.connect 
+    (<span class="hljs-string">'mongodb+srv://vue11:vue11@cluster0-s21uc.mongodb.net/test?retryWrites=true&amp;w=majority'</span>,{
+        <span class="hljs-attr">useNewUrlParser</span>: <span class="hljs-literal">true</span>
+    });
+    <span class="hljs-keyword">return</span> client.db(<span class="hljs-string">'vue_express'</span>).collection(<span class="hljs-string">'posts'</span>);
+} 
+
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-20" id="section-20"></a>
+</div>
+<p>for serach working</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">
+
+app.get(<span class="hljs-string">'/example/c'</span>,<span class="hljs-keyword">async</span> (req, res) =&gt; {
+   
+</pre>
+        </td>
+      </tr>
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-21" id="section-21"></a>
+</div>
+<p>code to decode token</p>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript">    <span class="hljs-keyword">let</span> token = req.headers.token;
+    <span class="hljs-built_in">console</span>.log(token);
+<span class="hljs-keyword">var</span> uid2= jwt.verify(token,<span class="hljs-string">'secretkey'</span>, (err,decoded) =&gt; {
+  <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> (error)
+
+  <span class="hljs-keyword">return</span> decoded.userID
+})
+
+    <span class="hljs-keyword">var</span> myquery = { <span class="hljs-attr">uid</span>:uid2};
+    <span class="hljs-keyword">const</span> posts = <span class="hljs-keyword">await</span> loadPostCollection();
+    res.send(<span class="hljs-keyword">await</span> posts.find(myquery).toArray());
+   <span class="hljs-built_in">console</span>.log(<span class="hljs-keyword">await</span> posts.find(myquery).toArray())
+    
+} ) 
+
+
+
+
+<span class="hljs-keyword">const</span> port = process.env.PORT || <span class="hljs-number">5001</span>;
+
+app.listen(port, ()=&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'server is running at '</span>,port));
+
+
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>
