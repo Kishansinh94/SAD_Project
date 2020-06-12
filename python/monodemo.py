@@ -1,0 +1,38 @@
+import pymongo
+import dns
+from neo4j import GraphDatabase
+from pymongo import MongoClient
+
+
+myclient = pymongo.MongoClient("mongodb+srv://vue11:vue11@cluster0-s21uc.mongodb.net/test?retryWrites=true&w=majority")
+mydb = myclient["eBookHouse_test"]
+mycol = mydb["temp"]
+mycol2=mydb["temp2"]
+
+#menu driven with find query
+i=1
+
+while i!='0':
+  y =''
+  x= ''
+  z= {}
+  isbn=input()
+  for x in mycol.find({"ISBN13":isbn},{"Author": 1,"_id":0 }):
+    y=x
+    z= bool(x)
+    #print(str(z))
+#find and store in variable 
+ #boolean to  check dictonary is empty or not
+  if z :
+    print("inside First")
+    for x in mycol2.find(y):
+            print(x)
+     
+  else:
+#passing this variable into the another query 
+    print("inside Second")
+    print("No data found")
+  print("Enter zero to Exit")
+  i=input()
+
+
